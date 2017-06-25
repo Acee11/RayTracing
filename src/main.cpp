@@ -26,36 +26,6 @@ int main()
 	Sphere sphere(Vector3D(0,5,100), 5);
 	Ray ray(Vector3D(0, 0, -100), Vector3D(0,0,1));
 	std::cout << "Test 6:\n" << sphere.getIntersectionPoint(ray) << std::endl;
-
-	/*
-	const unsigned int screenWidth = 600;
-	const unsigned int screenHeight = 600;
-
-	float cameraDistance = 200.0;
-	sf::Vector3<float> cameraPosition(0, 0, -cameraDistance);
-	sf::Vector3<float> bottolLeftPixel(-screenWidth/2, -screenHeight/2, 0);
-
-	sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "Main window");
-
-	sf::Uint8 pixels[screenHeight][screenWidth][4];
-	sf::Texture texture;
-	texture.create(screenWidth, screenHeight);
-	sf::Sprite sprite(texture);
-
-    window.clear(sf::Color::Black);
-    texture.update(&pixels[0][0][0]);
-	//window.draw(sprite);
-
-    window.display();
-    while(window.isOpen())
-    {
-    	sf::Event event;
-    	while(window.pollEvent(event))
-    	{
-    		if (event.type == sf::Event::Closed)
-        		window.close();
-    	}
-    }
-    */
+	
 	return 0;
 }

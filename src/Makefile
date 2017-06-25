@@ -1,10 +1,9 @@
 Flags = -std=c++14 -Wall -pedantic -Wextra -W -O2
 CPP = g++
 BIN = main
-LINKS = -lsfml-graphics -lsfml-window -lsfml-system
 
 $(BIN).out: $(BIN).o Vector3D.o Sphere.o Ray.o ArrayScene.o
-	$(CPP) $(Flags) $(BIN).o Vector3D.o Sphere.o Ray.o ArrayScene.o -o $(BIN).out $(LINKS)
+	$(CPP) $(Flags) $(BIN).o Vector3D.o Sphere.o Ray.o ArrayScene.o -o $(BIN).out
 	
 $(BIN).o: $(BIN).cpp
 	$(CPP) $(Flags) -c $(BIN).cpp -o $(BIN).o
