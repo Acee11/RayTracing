@@ -1,31 +1,56 @@
 #include <iostream>
+#include <iomanip> 
 
 #include "Vector3D.h"
 #include "Sphere.h"
 #include "Ray.h"
+#include "ArrayScene.h" 
+#include "Light.h"
+
+
 
 int main()
 {
-	Vector3D vect1(1.0, 2.0, 3.0);
-	std::cout << "Test 1:\n" << vect1.norm() << std::endl;
+	Vector3DBase bgd_pixel(0.75294117);
+	constexpr int w = 300;
+	constexpr int h = 300;
+	constexpr int offset = 150;
+	Vector3DBase camera(0, 0, -600);
+	Vector3DBase view[w][h];
+	ArrayScene scene;
+	scene.addObject(new Sphere({-50, 0, -100}, 70));
+	scene.addLight({{100, 100, -70}, 0.7});
 
-	Vector3D vect2(2.0, 2.5, 3.0);
-	std::cout << "Test 2:\n" << vect1 + vect2 << std::endl << vect1 * vect2 << std::endl;
-	vect1 += vect2;
-	vect2 *= vect2;
-	std::cout << "Test 3:\n" << vect1 << std::endl << vect2 << std::endl;
-
-	vect1.normalize();
-	std::cout << "Test 4:\n" << vect1 << std::endl << vect1.norm() << std::endl;
-
-	std::cout << "Test 5:\n" << vect1.dot(vect1.cross(vect2)) << std::endl;
-
-	std::cout << "Test 5:\n" << vect1 << std::endl << vect1 * 2.0 << std::endl << 
-		2.0 * vect1 << std::endl;
-
-	Sphere sphere(Vector3D(0,5,100), 5);
-	Ray ray(Vector3D(0, 0, -100), Vector3D(0,0,1));
-	std::cout << "Test 6:\n" << sphere.getIntersectionPoint(ray) << std::endl;
-	
-	return 0;
+	for(int i = offset-1; i >= -offset; --i)
+	{
+		int i_offset = i + offset;
+		for(int j = -offset; j < offset; ++j)
+		{
+			int j_offset = j + offset;
+			Vector3DBase pixel(j, i, 0);
+			Ray ray(camera, (pixel-camera).normalized());
+			try
+			{
+				auto ret = scene.getIntersectingObject(ray);
+				for(const auto& l : scene.lights)
+				{
+					Ray rayToLight(ret.second, (l.position - ret.second).normalized());	
+					try
+					{
+						auto ret1 = scene.getIntersectingObject(rayToLight);
+						view[j_offset][i_offset] = l.brightness * ret1.first.surface.color;
+					}
+					catch(const noIntersectionException& e)
+					{
+						view[j_offset][i_offset] = 0;
+					}
+						
+				}
+			}
+			catch(const noIntersectionException& e)
+			{
+				view[j_offset][i_offset] = bgd_pixel;
+			}
+		}
+	}
 }

@@ -1,21 +1,28 @@
 #include "ArrayScene.h"
 
-void ArrayScene::addObject(std::unique_ptr<Primitive> object)
+void ArrayScene::addObject(Primitive const* object)
 {
-	objects.push_back(std::move(object));
+	objects.push_back(std::unique_ptr<const Primitive>(object));
 }
-const Primitive& ArrayScene::getIntersectingObject(const Ray& ray) const
+
+std::pair<const Primitive&, Vector3DBase> ArrayScene::getIntersectingObject(const Ray& ray) const
 {
-	Vector3D closestIntPoint;
+	Primitive const* closestObject = nullptr;
+	Vector3DBase closestIntPoint(0,0,0);
+	float minDist = INF;
 	for(const auto& object : objects)
 	{
 		try
 		{
-			Vector3D intPoint = object.get()->getIntersectionPoint(ray);
-			if(intPoint.z < closestIntPoint.z)
+			Vector3DBase intPoint = object.get()->getIntersectionPoint(ray);
+			float intDist  = Vector3DBase::distance(intPoint, ray.eye);
+			if(intDist < 0.1)
+				continue;
+			if(intDist < minDist)
 			{
-				//closestObject = object;
+				closestObject = object.get();
 				closestIntPoint = intPoint;
+				minDist = intDist;
 			}
 		}
 		catch(const noIntersectionException& e)
@@ -23,10 +30,7 @@ const Primitive& ArrayScene::getIntersectingObject(const Ray& ray) const
 			continue;
 		}
 	}
-/*
 	if(closestObject == nullptr)
 		throw noIntersectionException();
-	return *closestObject;
-*/
-	return;
+	return std::pair<const Primitive&, Vector3DBase>(*closestObject, closestIntPoint);
 }

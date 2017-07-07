@@ -8,14 +8,21 @@
 class Sphere : public Primitive
 {
 private:
-	Vector3D center;
-	float radius;
+	Vector3DBase center;
+	Vector3DBase::basetype radius;
 public:
-	Sphere(Vector3D center, float radius)
-	: center(center), radius(radius)
-	{ }
+	Sphere()
+	: Sphere(Vector3DBase(0,0,0), 1)
+	{}
 
-	Vector3D getIntersectionPoint(const Ray& ray) const;
+	Sphere(Vector3DBase center, Vector3DBase::basetype radius)
+	: Primitive(), center(center), radius(radius)
+	{}
+
+	Vector3DBase getIntersectionPoint(const Ray& ray) const;
+	void print() const;
+
+	friend std::ostream& operator << (std::ostream& stream, const Sphere& sphere);
 };
 
 #endif

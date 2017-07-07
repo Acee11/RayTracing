@@ -5,14 +5,14 @@
 class Ray
 {
 public:
-	Ray(Vector3D eye, Vector3D offset)
+	Ray(Vector3DBase eye, Vector3DBase offset)
 	: eye(eye), offset(offset)
 	{ }
 
-	Vector3D operator () (float t) const;
+	Vector3DBase operator () (float t) const;
 
-	Vector3D eye;
-	Vector3D offset;
+	Vector3DBase eye;
+	Vector3DBase offset;
 };
 
 #endif

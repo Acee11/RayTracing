@@ -1,32 +1,50 @@
 #include "Sphere.h"
 
-Vector3D Sphere::getIntersectionPoint(const Ray& ray) const
+Vector3DBase Sphere::getIntersectionPoint(const Ray& ray) const
 {
-	constexpr float epsilon = 0.01;
-	float a = ray.offset.normSquared();
-	float b = 2 * ray.offset.dot(ray.eye - center);
-	float c = (ray.eye - center).normSquared() - radius*radius;
-	float delta = b*b - 4.0*a*c;
+	constexpr Vector3DBase::basetype epsilon = 0.01;
+	Vector3DBase::basetype a = ray.offset.normSquared();
+	Vector3DBase::basetype b = 2 * ray.offset.dot(ray.eye - center);
+	Vector3DBase::basetype c = (ray.eye - center).normSquared() - radius*radius;
+	Vector3DBase::basetype delta = b*b - 4.0*a*c;
 	if(delta < -epsilon) // no intersection points
 	{
 		throw noIntersectionException();
 	}
 	else if(delta < epsilon)
 	{
-		float t0 = -b/(2.0*a);
-		return ray(t0);
+		Vector3DBase::basetype t0 = -b/(2.0*a);
+		if(t0 < 0)
+			throw noIntersectionException();
+		else
+			return ray(t0);
 	}
 	else
 	{
-		float t0 = (-b + sqrt(delta)) / (2*a);
-		float t1 = (-b - sqrt(delta)) / (2*a);
 
-		Vector3D point1 = ray(t0);
-		Vector3D point2 = ray(t1);
+		Vector3DBase::basetype t0 = (-b + sqrt(delta)) / (2*a);
+		Vector3DBase::basetype t1 = (-b - sqrt(delta)) / (2*a);
 
-		if(point1.z < point2.z)
-			return point1;
+		if(t1 < t0)
+			std::swap(t1, t0);
+		if(t0 < 0 )
+		{
+			if(t1 < 0)
+				throw noIntersectionException();
+			return ray(t1);
+		}
 		else
-			return point2;
+			return ray(t0);
 	}
+}
+
+void Sphere::print() const
+{
+	std::cout << *this;
+}
+
+std::ostream& operator << (std::ostream& stream, const Sphere& sphere)
+{
+	stream << sphere.center << " , " << sphere.radius;
+	return stream;
 }
