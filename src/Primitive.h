@@ -19,6 +19,7 @@ public:
 	: surface(surf)
 	{}
 	virtual Vector3DBase getIntersectionPoint(const Ray& ray) const = 0;
+	virtual Vector3DBase getNormalVect(const Vector3DBase& point) const = 0;
 	virtual void print() const = 0;
 };
 

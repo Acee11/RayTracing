@@ -5,14 +5,10 @@
 class Surface
 {
 public:
-	Vector3DBase color;
-
-	Surface()
-	: Surface({0.5, 0.5, 0.5})
-	{}
-	Surface(Vector3DBase c)
-	: color(c)
-	{}
+	Vector3DBase specular;
+	Vector3DBase diffuse;
+	Vector3DBase ambient;
+	Vector3DBase::basetype shininess;
 };
 
 #endif

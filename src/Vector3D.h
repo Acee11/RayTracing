@@ -94,6 +94,33 @@ public:
 		return *this;
 	}
 
+	Vector3D<T> operator / (T scalar) const
+	{
+		return Vector3D<T>(
+			x / scalar,
+			y / scalar,
+			z / scalar
+		);
+	}
+
+	Vector3D<T>& operator /= (T scalar)
+	{
+		x /= scalar;
+		y /= scalar;
+		z /= scalar;
+
+		return *this;
+	}
+
+	Vector3D<T> operator - () const
+	{
+		return Vector3D<T>(
+			-x,
+			-y,
+			-z
+		);
+	}
+
 	Vector3D<T> cross(const Vector3D<T>& rhs) const
 	{
 		return Vector3D<T>(
@@ -120,22 +147,13 @@ public:
 		return (*this).dot(*this);
 	}
 
-	void normalize()
+	Vector3D<T>& normalize()
 	{
-		float vectNorm = norm();
-		x /= vectNorm;
-		z /= vectNorm;
-		y /= vectNorm;
+		*this /= norm();
+		return *this;
 	}
 
-	Vector3D normalized()
-	{
-		Vector3D<T> ret = *this;
-		ret.normalize();
-		return ret;
-	}
-
-	static T distance(Vector3D v1, Vector3D v2)
+	static T distance(Vector3D<T> v1, Vector3D<T> v2)
 	{
 		return (v1-v2).norm();
 	}

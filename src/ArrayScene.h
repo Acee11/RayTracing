@@ -17,7 +17,7 @@ private:
 	std::vector< std::unique_ptr<const Primitive> > objects;
 public:
 	void addObject(Primitive const* object);
-	std::pair<const Primitive&, Vector3DBase> getIntersectingObject(const Ray& ray) const;
+	std::pair<Primitive const*, Vector3DBase> getIntersectingObject(const Ray& ray) const;
 };
 
 #endif

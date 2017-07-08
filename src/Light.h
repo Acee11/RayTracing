@@ -6,7 +6,9 @@ class Light
 {
 public:
 	Vector3DBase position;
-	float brightness;
+	Vector3DBase specular;
+	Vector3DBase diffuse;
+	Vector3DBase ambient;
 };
 
 #endif

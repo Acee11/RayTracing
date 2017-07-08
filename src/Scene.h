@@ -11,12 +11,13 @@ class Scene
 private:
 public:
 	std::vector<Light> lights;
+	
 	void addLight(const Light& l)
 	{
 		lights.push_back(l);
 	}
 	virtual void addObject(Primitive const* object) = 0;
-	virtual std::pair<const Primitive&, Vector3DBase> getIntersectingObject(const Ray& ray) const = 0;
+	virtual std::pair<Primitive const*, Vector3DBase> getIntersectingObject(const Ray& ray) const = 0;
 };
 
 #endif

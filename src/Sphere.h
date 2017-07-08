@@ -19,7 +19,12 @@ public:
 	: Primitive(), center(center), radius(radius)
 	{}
 
+	Sphere(Vector3DBase center, Vector3DBase::basetype radius, Surface surf)
+	: Primitive(surf), center(center), radius(radius)
+	{}
+
 	Vector3DBase getIntersectionPoint(const Ray& ray) const;
+	Vector3DBase getNormalVect(const Vector3DBase& point) const;
 	void print() const;
 
 	friend std::ostream& operator << (std::ostream& stream, const Sphere& sphere);

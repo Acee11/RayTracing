@@ -38,6 +38,11 @@ Vector3DBase Sphere::getIntersectionPoint(const Ray& ray) const
 	}
 }
 
+Vector3DBase Sphere::getNormalVect(const Vector3DBase& point) const
+{
+	return (point-center).normalize();
+}
+
 void Sphere::print() const
 {
 	std::cout << *this;
