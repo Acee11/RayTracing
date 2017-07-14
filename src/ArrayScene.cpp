@@ -1,8 +1,8 @@
-#include "ArrayScene.h"
+#include "ArrayScene.hpp"
 
-void ArrayScene::addObject(Primitive const* object)
+void ArrayScene::addObject(std::unique_ptr<const Primitive> object)
 {
-	objects.push_back(std::unique_ptr<const Primitive>(object));
+	objects.push_back(std::move(object));
 }
 
 std::pair<Primitive const*, Vector3DBase> ArrayScene::getIntersectingObject(const Ray& ray) const
@@ -28,5 +28,5 @@ std::pair<Primitive const*, Vector3DBase> ArrayScene::getIntersectingObject(cons
 			continue;
 		}
 	}
-	return std::pair<Primitive const*, Vector3DBase>(closestObject, closestIntPoint);
+	return std::make_pair(closestObject, closestIntPoint);
 }

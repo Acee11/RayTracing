@@ -1,12 +1,87 @@
+#define BOOST_TEST_MAIN
+#define BOOST_TEST_DYN_LINK
+#include <boost/test/unit_test.hpp>
+
 #include <iostream>
 #include <iomanip> 
 
-#include "Vector3D.h"
-#include "Sphere.h"
-#include "Ray.h"
-#include "ArrayScene.h"
+#include "Vector3D.hpp"
+#include "Sphere.hpp"
+#include "Ray.hpp"
+#include "ArrayScene.hpp"
+
+#define EPS 0.001
+
+namespace utf = boost::unit_test;
+
+namespace
+{
+	BOOST_AUTO_TEST_SUITE(Vector3D)
+
+	BOOST_AUTO_TEST_CASE(testcase_plus)
+	{
+	    BOOST_CHECK(Vector3DBase(1,2,3) + Vector3DBase(1,2,3)  ==  Vector3DBase(2, 4, 6)); 
+	}
+
+	BOOST_AUTO_TEST_CASE(testcase_minus)
+	{
+	    BOOST_CHECK(Vector3DBase(1,2,3) - Vector3DBase(1,2,3)  ==  Vector3DBase(0, 0, 0)); 
+	    BOOST_CHECK(Vector3DBase(1,2,3) - Vector3DBase(1,2,3)  ==  Vector3DBase(0)); 
+	    BOOST_CHECK(Vector3DBase(1,2,3) - Vector3DBase(1,2,3)  ==  0); 
+	}
+
+	BOOST_AUTO_TEST_CASE(testcase_plus_equals)
+	{
+		Vector3DBase v1(1,2,3);
+		Vector3DBase v2(3,4,5);
+		v1 += v2;
+		BOOST_CHECK(v1  ==  Vector3DBase(4,6,8));
+		v2 += v2;
+		BOOST_CHECK(v2  ==  Vector3DBase(6,8,10));
+	}
+
+	BOOST_AUTO_TEST_CASE(testcase_minus_equals)
+	{
+		Vector3DBase v1(1,2,3);
+		Vector3DBase v2(3,4,5);
+		v1 -= v2;
+		BOOST_CHECK(v1  ==  Vector3DBase(-2,-2,-2));
+		v2 -= v2;
+		BOOST_CHECK(v2  ==  Vector3DBase(0,0,0));
+	}
+
+	BOOST_AUTO_TEST_CASE(testcase_scalar_operators)
+	{
+		Vector3DBase v1(1,2,3);
+		BOOST_CHECK(v1 * 2.0  ==  Vector3DBase(2, 4, 6));
+		BOOST_CHECK(v1 * 2.0  ==  2.0 * v1);
+		BOOST_CHECK(v1 / 2.0  ==  Vector3DBase(0.5, 1.0, 1.5));
+	}
+
+	BOOST_AUTO_TEST_CASE(testcase_dot, * utf::tolerance(EPS))
+	{
+		Vector3DBase v1(1,2,3);
+		Vector3DBase v2(3,4,5);
+		BOOST_CHECK(v1.dot(v2)  ==  26.0);
+		BOOST_CHECK(v1.dot(v1)  ==  14.0);
+		BOOST_CHECK(v2.dot(v2)  ==  9.0 + 16.0 + 25.0);
+	}
+
+	BOOST_AUTO_TEST_CASE(testcase_norm, * utf::tolerance(EPS))
+	{
+		Vector3DBase v1(1,2,3);
+		Vector3DBase v2(3,4,5);
+		BOOST_CHECK(abs(v1.norm() - 3.7416573867739413) < EPS);
+		BOOST_CHECK(v1.normalize()  ==  Vector3DBase(0.26726124, 0.53452248, 0.80178373));
+		BOOST_CHECK(v1 ==  Vector3DBase(0.26726124, 0.53452248, 0.80178373));
+		BOOST_CHECK(v2.dot(v2)  ==  9.0 + 16.0 + 25.0);
+	}
+
+	BOOST_AUTO_TEST_SUITE_END()
+}
 
 
+/*
 int main()
 {
 	Vector3DBase v1(1, 2, 3), v2(4, 5, 6);
@@ -43,3 +118,4 @@ int main()
 	ret.first.print();
 	std::cout << "  |  " << ret.second << std::endl;
 }
+*/

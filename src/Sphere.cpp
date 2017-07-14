@@ -1,4 +1,4 @@
-#include "Sphere.h"
+#include "Sphere.hpp"
 
 Vector3DBase Sphere::getIntersectionPoint(const Ray& ray) const
 {
@@ -43,13 +43,7 @@ Vector3DBase Sphere::getNormalVect(const Vector3DBase& point) const
 	return (point-center).normalize();
 }
 
-void Sphere::print() const
+void Sphere::print(std::ostream& stream) const
 {
-	std::cout << *this;
-}
-
-std::ostream& operator << (std::ostream& stream, const Sphere& sphere)
-{
-	stream << sphere.center << " , " << sphere.radius;
-	return stream;
+	stream << center << ", " << radius;
 }

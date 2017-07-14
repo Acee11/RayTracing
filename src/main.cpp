@@ -4,24 +4,24 @@
 #include <fstream>
 #include <cmath>
 
-#include "Vector3D.h"
-#include "Sphere.h"
-#include "Ray.h"
-#include "ArrayScene.h" 
-#include "Light.h"
-#include "Surface.h"
+#include "Vector3D.hpp"
+#include "Sphere.hpp"
+#include "Ray.hpp"
+#include "ArrayScene.hpp" 
+#include "Light.hpp"
+#include "Surface.hpp"
 
 
 
 int main()
 {
 	Vector3DBase bgd_pixel(0.7);
-	constexpr int w = 3200;
-	constexpr int h = 2400;
+	constexpr int w = 1920;
+	constexpr int h = 1080;
 	constexpr int wOffset = w/2;
 	constexpr int hOffset = h/2;
 	Vector3DBase camera(0, 0, -2400);
-	Vector3DBase* view = new Vector3DBase[w*h];
+	auto view = std::make_unique<Vector3DBase[]>(w*h);
 	ArrayScene scene;
 	Surface sphereSurface{
 		{0.5, 0.3, 0.6},
@@ -29,24 +29,24 @@ int main()
 		{0.2, 0.1, 0.5},
 		80.
 	};
-	scene.addObject(new Sphere(
-		{1200, 0, 200},
-		 250,
+	scene.addObject(std::make_unique<Sphere>(
+		Vector3DBase(800, 0, 400),
+		 200,
 		 sphereSurface
 	));
-	scene.addObject(new Sphere(
-		{400, 0, 200},
-		 235,
+	scene.addObject(std::make_unique<Sphere>(
+		Vector3DBase(300, 0, 400),
+		 135,
 		 sphereSurface
 	));
-	scene.addObject(new Sphere(
-		{-400, 0, 200},
-		 235,
+	scene.addObject(std::make_unique<Sphere>(
+		Vector3DBase(-300, 0, 400),
+		 135,
 		 sphereSurface
 	));
-	scene.addObject(new Sphere(
-		{-1200, 0, 200},
-		 250,
+	scene.addObject(std::make_unique<Sphere>(
+		Vector3DBase(-800, 0, 400),
+		 200,
 		 sphereSurface
 	));
 
@@ -70,7 +70,7 @@ int main()
 
 			Vector3DBase pixel(j, i, 0);
 			Vector3DBase dirTowardsPixel = (pixel-camera).normalize();
-			Ray ray(camera, dirTowardsPixel);
+			Ray ray{camera, dirTowardsPixel};
 
 			auto ret = scene.getIntersectingObject(ray);
 			auto intObj = ret.first;
@@ -86,7 +86,7 @@ int main()
 			for(const auto& light : scene.lights)
 			{
 				Vector3DBase dirTowardsLight = (light.position - intPoint).normalize();
-				Ray rayToLight(intPoint + 0.01*dirTowardsLight, dirTowardsLight);	
+				Ray rayToLight{intPoint + 0.01*dirTowardsLight, dirTowardsLight};	
 
 				//auto ret1 = scene.getIntersectingObject(rayToLight);
 				//if(ret1.first != nullptr)
@@ -107,14 +107,13 @@ int main()
 
 			}
 			view[i_offset*w + j_offset] = finalColor;
-			/*
-			*/
 		}
 	}
 
 	
 
-	Vector3D<uint8_t>* view_short = new Vector3D<uint8_t>[w*h];
+	//Vector3D<uint8_t>* view_int = new Vector3D<uint8_t>[w*h];
+	auto view_int = std::make_unique< Vector3D<uint8_t>[] >(w*h);
 	for(int i = 0; i < h; ++i)
 	{
 		for(int j = 0; j < w; ++j)
@@ -122,16 +121,14 @@ int main()
 			view[i*w + j].x = std::min((float)1., std::max((float)0., view[i*w + j].x));
 			view[i*w + j].y = std::min((float)1., std::max((float)0., view[i*w + j].y));
 			view[i*w + j].z = std::min((float)1., std::max((float)0., view[i*w + j].z));
-			view_short[i*w + j] = {(uint8_t)(view[i*w + j].x*255.), (uint8_t)(view[i*w + j].y*255.), (uint8_t)(view[i*w + j].z*255.)};
+			view_int[i*w + j] = {(uint8_t)(view[i*w + j].x*255.), (uint8_t)(view[i*w + j].y*255.), (uint8_t)(view[i*w + j].z*255.)};
 		}
 	}
 
 	std::ofstream myfile;
-	myfile.open ("file.data", std::ios::binary);
-	myfile.write((const char*)view_short, w*h*sizeof(Vector3D<uint8_t>));
+	myfile.open ("img/file.data", std::ios::binary);
+	myfile.write((const char*)view_int.get(), w*h*sizeof(Vector3D<uint8_t>));
 	myfile.close();
-	delete view;
-	delete view_short;
 
 	return 0;
 }
