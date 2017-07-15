@@ -1,5 +1,4 @@
-#ifndef _ARRAY_SCENE_H__
-#define _ARRAY_SCENE_H__
+#pragma once
 
 #include <vector>
 #include <memory>
@@ -17,8 +16,6 @@ class ArrayScene : public Scene
 private:
 	std::vector< std::unique_ptr<const Primitive> > objects;
 public:
-	void addObject(std::unique_ptr<const Primitive> object);
-	std::pair<Primitive const*, Vector3DBase> getIntersectingObject(const Ray& ray) const;
+	void addObject(std::unique_ptr<const Primitive> object) override;
+	std::pair<Primitive const*, Vector3DBase> getIntersectingObject(const Ray& ray) const override;
 };
-
-#endif

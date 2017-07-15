@@ -1,5 +1,4 @@
-#ifndef _Vector3D_H__
-#define _Vector3D_H__
+#pragma once
 #include <cmath>
 #include <iostream>
 #include <initializer_list>
@@ -8,13 +7,11 @@ template<class T>
 class Vector3D
 {
 public:
-	typedef T basetype;
+	using basetype = T;
 	T x, y, z;
 
 
-	Vector3D<T>()
-	: Vector3D<T>(0)
-	{}
+	Vector3D<T>() = default;
 
 	Vector3D<T>(T x)
 	: Vector3D<T>(x, x, x)
@@ -184,6 +181,4 @@ public:
 	}
 
 };
-typedef Vector3D<float> Vector3DBase;
-
-#endif
+using Vector3DBase = Vector3D<float>;

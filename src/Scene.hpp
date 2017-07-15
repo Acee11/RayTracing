@@ -1,5 +1,4 @@
-#ifndef _SCENE_H__
-#define _SCENE_H__
+#pragma once
 #include <memory>
 
 #include "Primitive.hpp"
@@ -10,10 +9,8 @@
 
 class Scene
 {
-private:
 public:
 	std::vector<Light> lights;
-	
 	void addLight(const Light& l)
 	{
 		lights.push_back(l);
@@ -21,5 +18,3 @@ public:
 	virtual void addObject(std::unique_ptr<const Primitive> object) = 0;
 	virtual std::pair<Primitive const*, Vector3DBase> getIntersectingObject(const Ray& ray) const = 0;
 };
-
-#endif

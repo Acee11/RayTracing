@@ -1,5 +1,4 @@
-#ifndef _SURFACE_H__
-#define _SURFACE_H__
+#pragma once
 #include "Vector3D.hpp"
 
 class Surface
@@ -10,5 +9,3 @@ public:
 	Vector3DBase ambient;
 	Vector3DBase::basetype shininess;
 };
-
-#endif

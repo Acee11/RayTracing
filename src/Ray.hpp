@@ -1,5 +1,4 @@
-#ifndef _RAY_H__
-#define _RAY_H__
+#pragma once
 #include "Vector3D.hpp"
 
 class Ray
@@ -10,5 +9,3 @@ public:
 	Vector3DBase eye;
 	Vector3DBase offset;
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef _SPHERE_H__
-#define _SPHERE_H__
+#pragma once
 #include "Primitive.hpp"
 #include "Ray.hpp"
 #include "Vector3D.hpp"
@@ -13,20 +12,14 @@ private:
 	Vector3DBase center;
 	Vector3DBase::basetype radius;
 public:
-	Sphere()
-	: Sphere(Vector3DBase(0,0,0), 1)
+	Sphere(const std::shared_ptr<Surface>& surface)
+	: Sphere(Vector3DBase(0,0,0), 1, surface)
 	{}
 
-	Sphere(Vector3DBase center, Vector3DBase::basetype radius)
-	: Primitive(), center(center), radius(radius)
-	{}
-
-	Sphere(Vector3DBase center, Vector3DBase::basetype radius, Surface surf)
-	: Primitive(surf), center(center), radius(radius)
+	Sphere(Vector3DBase center, Vector3DBase::basetype radius, const std::shared_ptr<Surface>& surface)
+	: Primitive(surface), center(center), radius(radius)
 	{}
 
 	Vector3DBase getIntersectionPoint(const Ray& ray) const override;
 	Vector3DBase getNormalVect(const Vector3DBase& point) const override;
 };
-
-#endif

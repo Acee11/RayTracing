@@ -6,11 +6,13 @@
 #include <iomanip> 
 
 #include "Vector3D.hpp"
+#include "Matrix3D.hpp"
 #include "Sphere.hpp"
 #include "Ray.hpp"
 #include "ArrayScene.hpp"
+#include "Camera.hpp"
 
-#define EPS 0.001
+constexpr Vector3DBase::basetype EPS = 0.001;
 
 namespace utf = boost::unit_test;
 
@@ -74,48 +76,84 @@ namespace
 		BOOST_CHECK(abs(v1.norm() - 3.7416573867739413) < EPS);
 		BOOST_CHECK(v1.normalize()  ==  Vector3DBase(0.26726124, 0.53452248, 0.80178373));
 		BOOST_CHECK(v1 ==  Vector3DBase(0.26726124, 0.53452248, 0.80178373));
-		BOOST_CHECK(v2.dot(v2)  ==  9.0 + 16.0 + 25.0);
+	}
+
+	BOOST_AUTO_TEST_SUITE_END()
+
+
+	BOOST_AUTO_TEST_SUITE(Matrix3D)
+
+	BOOST_AUTO_TEST_CASE(testcase_constr)
+	{
+		Matrix3DBase defMat;
+		Matrix3DBase zeroMat = 0;
+		Matrix3DBase idMat = 1;
+		Matrix3DBase copyZeroMat = zeroMat;
+		BOOST_CHECK(zeroMat == copyZeroMat);
+		BOOST_CHECK(idMat == Matrix3DBase({1,0,0,0,1,0,0,0,1}));
+	}
+
+	BOOST_AUTO_TEST_CASE(testcase_mult_mat)
+	{
+		Matrix3DBase idMat1 = 1;
+		Matrix3DBase idMat2 = 1;
+		Matrix3DBase zeroMat = 0;
+		BOOST_CHECK(idMat1 * idMat2 == idMat1);
+		BOOST_CHECK(idMat1 * idMat2 == idMat2 * idMat1);
+
+		Matrix3DBase mat1 = {1,2,3,4,5,6,7,8,9};
+		BOOST_CHECK(idMat1 * mat1 == mat1);
+		BOOST_CHECK(zeroMat * mat1 == zeroMat);
+
+		mat1 *= mat1;
+		BOOST_CHECK(mat1 == Matrix3DBase({30, 36, 42, 66, 81, 96, 102, 126, 150}));
+	}
+
+	BOOST_AUTO_TEST_CASE(testcase_mult_matvect)
+	{
+		Matrix3DBase idMat = 1;
+		Vector3DBase v1(1, 0, 0);
+		BOOST_CHECK(idMat*v1 == v1);
+		idMat *= 2;
+		BOOST_CHECK(idMat*v1 == 2*v1);
+	}
+
+	BOOST_AUTO_TEST_CASE(testcase_rot_mat)
+	{
+		Matrix3DBase rotXMat = Matrix3DBase::getXRotation(90.);
+		Matrix3DBase rotYMat = Matrix3DBase::getYRotation(90.);
+		Matrix3DBase rotZMat = Matrix3DBase::getZRotation(90.);
+		Vector3DBase v1(1, 0, 0);
+		BOOST_CHECK(rotXMat*v1 == Vector3DBase(1, 0, 0));
+		BOOST_CHECK(rotYMat*v1 == Vector3DBase(0, 0, -1));
+		BOOST_CHECK(rotZMat*v1 == Vector3DBase(0, 1, 0));
+	}
+
+	BOOST_AUTO_TEST_SUITE_END()
+
+
+	BOOST_AUTO_TEST_SUITE(CameraTest)
+
+	BOOST_AUTO_TEST_CASE(testcase_camera)
+	{
+		Camera cam{{0,0,-2400}, {0,0,0}, 90.};
+
+		int w = 1920;
+		int h = 1080;
+
+		auto view = cam.getView(1920, 1080);
+
+		std::cout << view.frustumTopLeft << std::endl
+			<< view.deltaX << std::endl
+			<< view.deltaY << std::endl
+			<< view.frustumTopLeft + ((float)w)*view.deltaX << std::endl
+			<< view.frustumTopLeft + ((float)h)*view.deltaY << std::endl;
+
+		auto topLeftCopy = view.frustumTopLeft;
+		for(int i = 0; i < w; ++i)
+			topLeftCopy += view.deltaX;
+		std::cout << topLeftCopy << std::endl;
 	}
 
 	BOOST_AUTO_TEST_SUITE_END()
 }
-
-
-/*
-int main()
-{
-	Vector3DBase v1(1, 2, 3), v2(4, 5, 6);
-	std::cout << "Vector3D tests:" << std::endl;
-	std::cout <<  v1 + v2 << " = [5, 7, 9]" << std::endl;
-	std::cout <<  v1 - v2 << " = [-3,-3, -3]" << std::endl;
-	std::cout <<  v1 * v2 << " = [4, 10, 18]" << std::endl;
-	std::cout <<  v1 + v2 << " = [5, 7 9]" << std::endl;
-	std::cout << std::fixed << std::setprecision(4) << v1.dot(v2) << " =~ 32" << std::endl;
-	std::cout << std::fixed << std::setprecision(4) << v1.norm() << " =~ 3.741" << std::endl;
-	std::cout << std::fixed << std::setprecision(4) << v1.normSquared() << " = 14" << std::endl;
-	std::cout << std::fixed << std::setprecision(4) << 2 * v1 << 
-		" = " << v1 * 2 << " = [2, 4, 9]" << std::endl;
-
-	Sphere s1({0, 0, 3}, 2), s2({0,2,3}, 2);
-	Ray r1({0, 0,-10 }, {0, 0, 1});
-	std::cout << "Sphere intersection tests:" << std::endl;
-	std::cout << s1.getIntersectionPoint(r1) << " = [0, 0, 1]" << std::endl;
-	std::cout << s2.getIntersectionPoint(r1) << " = [0, 0, 3]" << std::endl;
-
-	Ray r2({0, 0, 3}, {0, 0, 1});
-	std::cout << s1.getIntersectionPoint(r2) << " = [0, 0, 5]" << std::endl;
-
-
-	ArrayScene scene;
-	scene.addObject(new Sphere({0, 0, 3}, 2));
-	scene.addObject(new Sphere({5, 5, 5}, 1));
-	scene.addObject(new Sphere({-5, -5, 10}, 2));
-	scene.addObject(new Sphere({0, 0, 7}, 2));
-
-	Ray r({0, 0,-10 }, {0, 0, 1});
-
-	auto ret = scene.getIntersectingObject(r);
-	ret.first.print();
-	std::cout << "  |  " << ret.second << std::endl;
-}
-*/
