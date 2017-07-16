@@ -20,6 +20,6 @@ public:
 	: Primitive(surface), center(center), radius(radius)
 	{}
 
-	Vector3DBase getIntersectionPoint(const Ray& ray) const override;
+	std::unique_ptr<Vector3DBase> getIntersectionPoint(const Ray& ray) const override;
 	Vector3DBase getNormalVect(const Vector3DBase& point) const override;
 };

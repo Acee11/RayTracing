@@ -1,6 +1,6 @@
 #include "Sphere.hpp"
 
-Vector3DBase Sphere::getIntersectionPoint(const Ray& ray) const
+std::unique_ptr<Vector3DBase> Sphere::getIntersectionPoint(const Ray& ray) const
 {
 	constexpr Vector3DBase::basetype epsilon = 0.01;
 	Vector3DBase::basetype a = ray.offset.normSquared();
@@ -9,32 +9,32 @@ Vector3DBase Sphere::getIntersectionPoint(const Ray& ray) const
 	Vector3DBase::basetype delta = b*b - 4.0*a*c;
 	if(delta < -epsilon) // no intersection points
 	{
-		throw noIntersectionException();
+		return std::unique_ptr<Vector3DBase>(nullptr);
 	}
 	else if(delta < epsilon)
 	{
 		Vector3DBase::basetype t0 = -b/(2.0*a);
 		if(t0 < 0)
-			throw noIntersectionException();
+			return std::unique_ptr<Vector3DBase>(nullptr);
 		else
-			return ray(t0);
+			return std::make_unique<Vector3DBase>(ray(t0));
 	}
 	else
 	{
 
-		Vector3DBase::basetype t0 = (-b + sqrt(delta)) / (2*a);
-		Vector3DBase::basetype t1 = (-b - sqrt(delta)) / (2*a);
+		Vector3DBase::basetype t0 = (-b + sqrt(delta)) / (2.*a);
+		Vector3DBase::basetype t1 = (-b - sqrt(delta)) / (2.*a);
 
 		if(t1 < t0)
 			std::swap(t1, t0);
 		if(t0 < 0 )
 		{
 			if(t1 < 0)
-				throw noIntersectionException();
-			return ray(t1);
+				return std::unique_ptr<Vector3DBase>(nullptr);;
+			return std::make_unique<Vector3DBase>(ray(t1));
 		}
 		else
-			return ray(t0);
+			return std::make_unique<Vector3DBase>(ray(t0));
 	}
 }
 

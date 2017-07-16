@@ -1,7 +1,7 @@
 ODIR = obj
 CPPDIR = src
 
-FLAGS = -std=c++14 -Wall -MMD -pedantic -Wextra -W -O3 -mtune=intel -mavx2 -I $(CPPDIR)
+FLAGS = -std=c++14 -fopenmp -Wall -MMD -pedantic -Wextra -W -O3 -I $(CPPDIR)
 CPP = g++
 
 ALL_CPP_FILES = $(wildcard $(CPPDIR)/*.cpp)
@@ -15,13 +15,13 @@ all: main.out test.out
 
 
 main.out: $(OBJ_FILES) obj/main.o
-	$(CPP) $(OBJ_FILES) obj/main.o -o main.out $(FLAGS) -lpthread
+	$(CPP) $(OBJ_FILES) obj/main.o -o main.out $(FLAGS) 
 
 test.out: $(OBJ_FILES) obj/test.o
-	$(CPP) $(OBJ_FILES) obj/test.o -o test.out $(FLAGS) -lboost_unit_test_framework -lpthread
+	$(CPP) $(OBJ_FILES) obj/test.o -o test.out $(FLAGS) -lboost_unit_test_framework 
 
 $(ODIR)/%.o : $(CPPDIR)/%.cpp
-	$(CPP) -c -o $@ $< $(FLAGS)
+	$(CPP) -c -o $@ $< $(FLAGS) 
 
 
 .PHONY: clean

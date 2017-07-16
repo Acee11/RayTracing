@@ -6,7 +6,8 @@
 #include <fstream>
 #include <memory>
 #include <vector>
-#include <thread>
+#include <omp.h>
+#include <chrono>
 
 #include "Vector3D.hpp"
 #include "Sphere.hpp"
@@ -16,11 +17,13 @@
 #include "Surface.hpp"
 #include "Camera.hpp"
 
+using Clock = std::chrono::high_resolution_clock;
+
 class RayTracer
 {
 	using Bitmap = std::vector<Vector3DBase>;
 private:
-	void fillBitmap(Bitmap& bitmap, const Camera::View& view, int beg_i, int beg_j, int end_i, int end_j) const;
+	void fillBitmap(Bitmap& bitmap, const Camera::View& view, Vector3DBase YIterator, int beg_i, int end_i) const;
 
 	Vector3DBase getPixelColor(const Ray& ray) const;
 	Vector3DBase totalAmbient;

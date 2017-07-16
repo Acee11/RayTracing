@@ -21,7 +21,7 @@ int main()
 	constexpr int w = 1920;
 	constexpr int h = 1080;
 
-	Camera camera{{0, 600, -1800}, {0,20,0}, 70};
+	Camera camera{{0, 0, -1400}, {0,0,0}, 70};
 	auto scene = std::make_shared<ArrayScene>();
 
 	auto sphereSurface = std::make_shared<Surface>(Surface{
@@ -30,6 +30,7 @@ int main()
 		{0.2, 0.1, 0.5},
 		80.
 	});
+
 	scene->addObject(std::make_unique<Sphere>(
 		Vector3DBase(800, 0, 400),
 		 200,

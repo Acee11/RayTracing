@@ -20,7 +20,7 @@ public:
 	Primitive(const std::shared_ptr<Surface>& surface)
 		: surface(surface)
 	{}
-	virtual Vector3DBase getIntersectionPoint(const Ray& ray) const = 0;
+	virtual std::unique_ptr<Vector3DBase> getIntersectionPoint(const Ray& ray) const = 0;
 	virtual Vector3DBase getNormalVect(const Vector3DBase& point) const = 0;
 	friend std::ostream& operator << (std::ostream& stream, const Primitive& primitive)
 	{

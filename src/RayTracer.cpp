@@ -15,21 +15,18 @@ RayTracer::RayTracer(const std::shared_ptr<Scene>& scene,const Camera& camera)
 void RayTracer::fillBitmap(
 	Bitmap& bitmap, 
 	const Camera::View& view,
-	int beg_i, int beg_j, 
-	int end_i, int end_j
+	Vector3DBase YIterator,
+	int beg_i, int end_i
 ) const
 {
-	auto YIterator = view.frustumTopLeft + static_cast<Vector3DBase::basetype>(beg_i) * view.deltaY
-		+ static_cast<Vector3DBase::basetype>(beg_j) * view.deltaX;
+	// auto YIterator = view.frustumTopLeft + beg_i * view.deltaY;
 	for(int i = beg_i; i < end_i; ++i, YIterator += view.deltaY)
 	{
 		auto XIterator = YIterator;
-		for(int j = beg_j; j < end_j; ++j, XIterator += view.deltaX)
+		for(int j = 0; j < view.width; ++j, XIterator += view.deltaX)
 		{
 			auto direction = (XIterator - camera.location).normalize();
 			Ray rayTowPixel{camera.location, direction};
-			if(i*view.width + j < 0)
-				std::cout << 1;
 			bitmap[i*view.width + j] = getPixelColor(rayTowPixel);
 		}
 	}
@@ -76,18 +73,43 @@ std::vector<Vector3DBase> RayTracer::getBitmap(int width, int height) const
 
 	Camera::View view = camera.getView(width, height);
 
-	int width2 = width/2;
-	int height2 = height/2;
+	
+	// int height4 = height/4;
 
-	std::thread t1(&RayTracer::fillBitmap, this, std::ref(bitmap), std::ref(view), 0, 0, height2, width2);
-	std::thread t2(&RayTracer::fillBitmap, this, std::ref(bitmap), std::ref(view), 0, width2, height2, width);
-	std::thread t3(&RayTracer::fillBitmap, this, std::ref(bitmap), std::ref(view), height2, 0, height, width2);
-	std::thread t4(&RayTracer::fillBitmap, this, std::ref(bitmap), std::ref(view), height2, width2, height, width);
 
-	t1.join();
-	t2.join();
-	t3.join();
-	t4.join();
+	// this solves numerical issues
+	// auto YIterator = view.frustumTopLeft;
+	// std::vector<Vector3DBase> iterators;
+	// for(int i = 0; i < height; ++i, YIterator += view.deltaY)
+	// {
+	// 	if(i % height4 == 0)
+	// 	{
+	// 		iterators.push_back(YIterator);
+	// 		if(iterators.size() == 4)
+	// 			break;
+	// 	}
+	// }
+
+	auto  start  = Clock::now();
+	// Vector3DBase YIterator = view.frustumTopLeft, XIterator;
+	auto location = camera.location;
+	auto frustumLocation = view.frustumTopLeft;
+	auto deltaX = view.deltaX;
+	auto deltaY = view.deltaY;
+	int i, j;
+	#pragma omp parallel for schedule(static) num_threads(4) shared(bitmap, location, deltaY, deltaX, width, height) private(i, j)
+	for(i = 0; i < height; ++i)
+	{
+		for(j = 0; j < width; ++j)
+		{
+			bitmap[i*width + j] = getPixelColor(Ray{location, ((frustumLocation + i*deltaY + j*deltaX) - location).normalize()});
+		}
+	}
+	
+	auto stop = Clock::now();
+	std::cout << "Time: "
+            << std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count()
+            << "[ms]" << std::endl;
 
 	return bitmap;
 }

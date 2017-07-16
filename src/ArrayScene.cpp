@@ -12,20 +12,15 @@ std::pair<Primitive const*, Vector3DBase> ArrayScene::getIntersectingObject(cons
 	float minDist = INF;
 	for(const auto& object : objects)
 	{
-		try
-		{
-			Vector3DBase intPoint = object.get()->getIntersectionPoint(ray);
-			float intDist  = Vector3DBase::distance(intPoint, ray.eye);
-			if(intDist < minDist)
-			{
-				closestObject = object.get();
-				closestIntPoint = intPoint;
-				minDist = intDist;
-			}
-		}
-		catch(const noIntersectionException& e)
-		{
+		auto intPoint = object->getIntersectionPoint(ray);
+		if(intPoint == nullptr)
 			continue;
+		float intDist  = Vector3DBase::distance(*intPoint, ray.eye);
+		if(intDist < minDist)
+		{
+			closestObject = object.get();
+			closestIntPoint = *intPoint;
+			minDist = intDist;
 		}
 	}
 	return std::make_pair(closestObject, closestIntPoint);
