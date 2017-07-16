@@ -23,7 +23,6 @@ class RayTracer
 {
 	using Bitmap = std::vector<Vector3DBase>;
 private:
-	void fillBitmap(Bitmap& bitmap, const Camera::View& view, Vector3DBase YIterator, int beg_i, int end_i) const;
 
 	Vector3DBase getPixelColor(const Ray& ray) const;
 	Vector3DBase totalAmbient;
