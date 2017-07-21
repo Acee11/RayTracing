@@ -6,11 +6,6 @@
 #include "Ray.hpp"
 #include "Surface.hpp"
 
-class noIntersectionException : public std::exception
-{ };
-
-
-
 class Primitive
 {
 private:

@@ -122,9 +122,9 @@ public:
 	bool operator == (const Vector3D<T>& rhs) const
 	{
 		constexpr T eps = 0.00001;
-		return abs(x - rhs.x) < eps && 
-			   abs(y - rhs.y) < eps && 
-			   abs(z - rhs.z) < eps;
+		return fabs(x - rhs.x) < eps && 
+			   fabs(y - rhs.y) < eps && 
+			   fabs(z - rhs.z) < eps;
 	}
 
 	Vector3D<T> cross(const Vector3D<T>& rhs) const
@@ -157,6 +157,13 @@ public:
 	{
 		*this /= norm();
 		return *this;
+	}
+
+	Vector3D<T> normalized() const
+	{
+		Vector3D<T> ret = (*this);
+		ret.normalize();
+		return ret;
 	}
 
 	static T distance(Vector3D<T> v1, Vector3D<T> v2)

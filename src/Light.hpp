@@ -5,7 +5,7 @@ class Light
 {
 public:
 	
-	Vector3DBase position;
+	Vector3DBase location;
 	Vector3DBase specular;
 	Vector3DBase diffuse;
 	Vector3DBase ambient;

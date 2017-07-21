@@ -15,10 +15,10 @@ all: main.out test.out
 
 
 main.out: $(OBJ_FILES) obj/main.o
-	$(CPP) $(OBJ_FILES) obj/main.o -o main.out $(FLAGS) 
+	$(CPP) $(OBJ_FILES) obj/main.o -o main.out $(FLAGS)
 
 test.out: $(OBJ_FILES) obj/test.o
-	$(CPP) $(OBJ_FILES) obj/test.o -o test.out $(FLAGS) -lboost_unit_test_framework 
+	$(CPP) $(OBJ_FILES) obj/test.o -o test.out $(FLAGS) -lboost_unit_test_framework
 
 $(ODIR)/%.o : $(CPPDIR)/%.cpp
 	$(CPP) -c -o $@ $< $(FLAGS) 

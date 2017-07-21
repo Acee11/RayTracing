@@ -67,7 +67,7 @@ public:
 		constexpr T eps = 0.00001;
 		for(int i = 0; i < 3; ++i)
 			for(int j = 0; j < 3; ++j)
-				if(abs(mat[i][j] - rhs.mat[i][j]) > eps)
+				if(fabs(mat[i][j] - rhs.mat[i][j]) > eps)
 					return false;
 		return true;
 	}

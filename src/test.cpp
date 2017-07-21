@@ -9,7 +9,6 @@
 #include "Matrix3D.hpp"
 #include "Sphere.hpp"
 #include "Ray.hpp"
-#include "ArrayScene.hpp"
 #include "Camera.hpp"
 
 constexpr Vector3DBase::basetype EPS = 0.001;
@@ -73,7 +72,7 @@ namespace
 	{
 		Vector3DBase v1(1,2,3);
 		Vector3DBase v2(3,4,5);
-		BOOST_CHECK(abs(v1.norm() - 3.7416573867739413) < EPS);
+		BOOST_CHECK(fabs(v1.norm() - 3.7416573867739413) < EPS);
 		BOOST_CHECK(v1.normalize()  ==  Vector3DBase(0.26726124, 0.53452248, 0.80178373));
 		BOOST_CHECK(v1 ==  Vector3DBase(0.26726124, 0.53452248, 0.80178373));
 	}
